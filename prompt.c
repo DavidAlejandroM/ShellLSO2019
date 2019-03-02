@@ -30,36 +30,45 @@ int main()
             *path = (char *)malloc(1 + strlen(items[0]) + strlen(mypath[0]));
             strcpy(path, mypath[0]);
             strcat(path, items[0]);
-            printf("%s\n", path);
+            //printf("%s\n", path);
         }
         else
         {
             *path = (char *)malloc(1 + strlen(items[0]) + strlen(mypath[2]));
             strcpy(path, mypath[2]);
             strcat(path, items[0]);
-            printf("%s\n", path);
+            //printf("%s\n", path);
         }
 
         if (background == 0)
         {
-            execv(path, items); // Acá va la invocación de la orden externa
+            if(strcmp("udea-cd",items[0])){
+                printf("is equal");
+            }
+            else if (fork() == 0)
+            {
+                execv(path, items); // Acá va la invocación de la orden interna
+            }
+            else
+            {
+                wait(&status);
+            }
         }
 
         else if (background == 1)
         {
-            printf("lanzando en segundo plano\n");
             if (fork() == 0)
             {
                 execv(path, items); // Acá va la invocación de la orden externa
             }
             else
             {
-                wait(&status); // (Opcional se tratara con mas detalle a continuacion)
+                wait(&status);
             }
         }
         else
         {
-            wait(&status); // (Opcional se tratara con mas detalle a continuacion)
+            wait(&status);
         }
 
         liberaItems(items);
@@ -68,6 +77,8 @@ int main()
     return 0;
 }
 
+/*  devuelve 0 si la primera parte del comando no concide con udea
+    y 1 si coincide*/
 int checkTypeFunction(char *cadena)
 {
     int size = 0;
@@ -82,7 +93,7 @@ int checkTypeFunction(char *cadena)
     }
     for (int i = 0; i < size; i++)
     {
-        printf("%c - %c\n", *(cadena + i), *(udea + i));
+        //printf("%c - %c\n", *(cadena + i), *(udea + i));
 
         if (*(cadena + i) != *(udea + i))
         {
